@@ -47,6 +47,7 @@ COPY root/usr/libexec/fix-permissions /usr/libexec/fix-permissions
 RUN INSTALL_PKGS="rsync tar gettext bind-utils postgresql-server postgresql-contrib nss_wrapper " && \
     INSTALL_PKGS+="findutils xz" && \
     INSTALL_PKGS+=" pgaudit" && \
+    INSTALL_PKGS+=" procps-ng util-linux postgresql-upgrade" && \
     dnf -y module enable postgresql:13 && \
     dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \

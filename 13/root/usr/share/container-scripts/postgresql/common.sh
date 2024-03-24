@@ -297,7 +297,7 @@ function wait_for_postgresql_master() {
 run_pgupgrade ()
 (
   # Remove .pid file if the file persists after ugly shut down
-  if [ -f "$PGDATA/postmaster.pid" ] && ! pgrep -f "postgres" > /dev/null; then
+  if [ -f "$PGDATA/postmaster.pid" ]; then
     rm -rf "$PGDATA/postmaster.pid"
   fi
 
@@ -308,11 +308,11 @@ run_pgupgrade ()
   if test "$old_raw_version" = 92; then
     old_collection=postgresql92
   else
-    old_collection=rh-postgresql$old_raw_version
+    old_collection=postgresql-$old_raw_version
   fi
 
-  old_pgengine=/opt/rh/$old_collection/root/usr/bin
-  new_pgengine=/opt/rh/rh-postgresql${new_raw_version}/root/usr/bin
+  old_pgengine=/usr/lib64/pgsql/$old_collection/bin
+  new_pgengine=/usr/bin
   PGDATA_new="${PGDATA}-new"
 
   printf >&2 "\n==========  \$PGDATA upgrade: %s -> %s  ==========\n\n" \
@@ -352,7 +352,7 @@ run_pgupgrade ()
   info_msg "Starting old postgresql once again for a clean shutdown..."
   "${old_pgengine}/pg_ctl" start -w --timeout 86400 -o "-h ''"
   info_msg "Waiting for postgresql to be ready for shutdown again..."
-  "${old_pgengine}/pg_isready"
+  # "${old_pgengine}/pg_isready"
   info_msg "Shutting down old postgresql cleanly..."
   "${old_pgengine}/pg_ctl" stop
 
